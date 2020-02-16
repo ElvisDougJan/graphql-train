@@ -2,16 +2,37 @@ const executaQuery = require('../database/queries')
 
 class Cliente {
   async lista() {
-    const sql = 'SELECT * FROM Clientes'
+    const sql = 'SELECT * FROM Clientes; SELECT * FROM Pets'
 
     return executaQuery(sql)
+      .then(dados => {
+        const clientes = dados[0]
+        const pets = dados[1]
+
+        return clientes.map(cliente => {
+          const petsCliente = pets.filter(pet => pet.donoId === cliente.id)
+
+          return ({
+            ...cliente,
+            pets: petsCliente
+          })
+        })
+      })
   }
 
   async buscaPorId(id) {
-    const sql = `SELECT * FROM Clientes WHERE id=${id}`
+    const sql = `SELECT * FROM Clientes WHERE id=${id}; SELECT * FROM Pets WHERE Pets.donoId = ${id}`
 
     return executaQuery(sql)
-      .then(clientes => clientes[0])
+      .then(dados => {
+        const cliente = dados[0][0]
+        const pets = dados[1]
+
+        return ({
+          ...cliente,
+          pets
+        })
+      })
       .catch(err => err)
   }
 
