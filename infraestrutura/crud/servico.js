@@ -1,36 +1,43 @@
 const executaQuery = require('../database/queries')
 
 class Servico {
-  lista(res) {
+  async lista() {
     const sql = 'SELECT * FROM Servicos'
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
   }
 
-  buscaPorId(res, id) {
+  async buscaPorId(id) {
     const sql = `SELECT * FROM Servicos WHERE id=${parseInt(id)}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(servico => servico[0])
   }
 
-  adiciona(res, item) {
+  async adiciona(item) {
     const { nome, preco, descricao } = item
     const sql = `INSERT INTO Servicos(nome, Preco, Descricao) VALUES('${nome}', ${preco}, '${descricao}')`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(servicoCriado => ({
+        id: servicoCriado.insertId,
+        ...item
+      }))
   }
 
-  atualiza(res, novoItem, id) {
-    const { nome, preco, descricao } = novoItem
+  async atualiza(novoItem) {
+    const { id, nome, preco, descricao } = novoItem
     const sql = `UPDATE Servicos SET nome='${nome}', Preco=${preco}, Descricao='${descricao}' WHERE id=${id}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(() => novoItem)
   }
 
-  deleta(res, id) {
+  async deleta(id) {
     const sql = `DELETE FROM Servicos WHERE id=${id}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(() => 'Servico deletado com sucesso!')
   }
 }
 
