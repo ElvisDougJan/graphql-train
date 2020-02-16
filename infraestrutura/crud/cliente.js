@@ -1,36 +1,48 @@
 const executaQuery = require('../database/queries')
 
 class Cliente {
-  lista(res) {
+  async lista() {
     const sql = 'SELECT * FROM Clientes'
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
   }
 
-  buscaPorId(res, id) {
+  async buscaPorId(id) {
     const sql = `SELECT * FROM Clientes WHERE id=${id}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(clientes => clientes[0])
+      .catch(err => err)
   }
 
-  adiciona(res, item) {
+  async adiciona(item) {
     const { nome, cpf } = item
     const sql = `INSERT INTO Clientes(nome, CPF) VALUES('${nome}', '${cpf}')`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(response => ({
+        id: response.insertId,
+        nome,
+        cpf
+      }))
+      .catch(error => error)
   }
 
-  atualiza(res, novoItem, id) {
-    const { nome, cpf } = novoItem
+  async atualiza(novoItem) {
+    const { id, nome, cpf } = novoItem
     const sql = `UPDATE Clientes SET nome='${nome}', CPF='${cpf}' WHERE id=${id}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(() => novoItem)
+      .catch(err => err)
   }
 
-  deleta(res, id) {
+  async deleta(id) {
     const sql = `DELETE FROM Clientes WHERE id=${id}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql)
+      .then(() => 'Cliente deletado com sucesso!')
+      .catch(err => err)
   }
 }
 

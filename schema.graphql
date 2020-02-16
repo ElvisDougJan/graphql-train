@@ -1,3 +1,16 @@
+type Cliente {
+  id: ID!,
+  nome: String!,
+  cpf: String!
+}
+
+type Mutation {
+  adicionarCliente(nome: String!, cpf: String!): Cliente!
+  atualizarCliente(id: ID!, nome: String!, cpf: String!): Cliente!
+  deletaClientePorId(id: ID!): String!
+}
+
 type Query {
-  status: String!
+  listaClientes: [Cliente]!
+  consultaClientePorId(id: ID!): Cliente!
 }
