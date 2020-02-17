@@ -13,5 +13,5 @@ type Mutation {
 
 type Query {
   listaClientes: [Cliente]!
-  consultaClientePorId(id: ID!): Cliente!,
+  consultaClientePorId(id: ID!): Cliente!
 }
